@@ -1,5 +1,6 @@
 package org.launchcode.controllers;
 
+
 import org.launchcode.models.Category;
 import org.launchcode.models.Cheese;
 import org.launchcode.models.data.CategoryDao;
@@ -28,8 +29,9 @@ public class CheeseController {
     @Autowired
     private CategoryDao categoryDao;
 
-    // Request path: /cheese
-    @RequstMapping(value = "")
+
+
+    @RequestMapping(value = "")
     public String index(Model model) {
 
         model.addAttribute("cheeses", cheeseDao.findAll());
@@ -47,14 +49,14 @@ public class CheeseController {
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
-    public String processAddCheeseForm(@ModelAttribute  @Valid Cheese newCheese,
-                                       Errors errors,@RequestParam int categoryId, Model model) {
-        Category cat = categoryDao.findOne(categoryId);
+    public String processAddCheeseForm(@ModelAttribute  @Valid Cheese newCheese, Errors errors, @RequestParam int categoryId, Model model) {
+
         if (errors.hasErrors()) {
             model.addAttribute("title", "Add Cheese");
+            //model.addAttribute("categories", categoryDao.findAll());
             return "cheese/add";
         }
-
+        Category cat = categoryDao.findOne(categoryId);
         newCheese.setCategory(cat);
         cheeseDao.save(newCheese);
         return "redirect:";
@@ -69,11 +71,13 @@ public class CheeseController {
 
     @RequestMapping(value = "remove", method = RequestMethod.POST)
     public String processRemoveCheeseForm(@RequestParam int[] cheeseIds) {
+
         for (int cheeseId : cheeseIds) {
             cheeseDao.delete(cheeseId);
         }
 
         return "redirect:";
-
     }
+
+
 }
